@@ -4,22 +4,6 @@
 from flask import Flask, jsonify, request
 from newspaper import Article;
 
-# Createing a "books" JSON / dict to emulate data coming from a database.
-books = [
-    {
-        "id": 1,
-        "title": "Harry Potter and the Goblet of Fire",
-        "author": "J.K. Rowling",
-        "isbn": "1512379298"
-    },
-    {
-        "id": 2,
-        "title": "Lord of the Flies",
-        "author": "William Golding",
-        "isbn": "0399501487"
-    }
-]
-
 # Creating a new "app" by using the Flask constructor. Passes __name__ as a parameter.
 app = Flask(__name__)
 
@@ -34,15 +18,11 @@ def index():
 # This function requires a parameter from the URL.
 def get_content():
     url = request.args.get('url')
-    item = request.args.get('item')
     result = {}
     article = Article(url)
     article.download()
     article.parse()
-    if(item=='title'):
-        result=article.title
-    if(item=='content'):
-        result=article.text
+    result=jsonify({"title":article.title,"content":article.text})
     return result
     
 # Checks to see if the name of the package is the run as the main package.
